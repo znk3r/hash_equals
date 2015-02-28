@@ -29,12 +29,12 @@ namespace
         {
             if (!is_string($knownString)) {
                 trigger_error("hash_equals(): Expected knownString to be a string", E_USER_WARNING);
-                $knownString = (string) $knownString;
+                return false;
             }
 
             if (!is_string($userString)) {
                 trigger_error("hash_equals(): Expected userString to be a string", E_USER_WARNING);
-                $userString = (string) $userString;
+                return false;
             }
 
             $knownLength = strlen($knownString);
