@@ -19,16 +19,6 @@ class HashEqualsTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function dataProviderNonStringEqual()
-    {
-        return array(
-            array('123', 123, true),
-            array(123, 123, true),
-            array(null, '', true),
-            array(null, null, true),
-        );
-    }
-
     public function dataProviderNonEqual()
     {
         return array(
@@ -40,20 +30,16 @@ class HashEqualsTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function dataProviderNonStringNonEqual()
-    {
-        return array(
-            array(123, 'NaN'),  // Generates an E_USER_WARNING
-            array('NaN', 123),  // Generates an E_USER_WARNING
-            array(null, 123),   // Generates an E_USER_WARNING
-        );
-    }
-
     public function dataProviderNonString()
     {
-        return array_merge(
-            $this->dataProviderNonStringEqual(),
-            $this->dataProviderNonStringNonEqual()
+        return array(
+            array(123, 'NaN'),
+            array('NaN', 123),
+            array(null, 123),
+            array('123', 123),
+            array(123, 123),
+            array(null, ''),
+            array(null, null),
         );
     }
 
@@ -66,11 +52,19 @@ class HashEqualsTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider dataProviderNonStringEqual
+     * @dataProvider dataProviderNonEqual
+     */
+    public function testEqualsFalse($knownString, $userString)
+    {
+        $this->assertFalse(hash_equals($knownString, $userString));
+    }
+
+    /**
+     * @dataProvider dataProviderNonString
      */
     public function testNonStringEqualsTrue($knownString, $userString)
     {
-        $this->assertTrue(@hash_equals($knownString, $userString));
+        $this->assertfalse(@hash_equals($knownString, $userString));
     }
 
     /**
@@ -80,21 +74,5 @@ class HashEqualsTest extends PHPUnit_Framework_TestCase
     public function testNonStringWarning($knownString, $userString)
     {
         hash_equals($knownString, $userString);
-    }
-
-    /**
-     * @dataProvider dataProviderNonEqual
-     */
-    public function testEqualsFalse($knownString, $userString)
-    {
-        $this->assertFalse(hash_equals($knownString, $userString));
-    }
-
-    /**
-     * @dataProvider dataProviderNonStringNonEqual
-     */
-    public function testNonStringEqualsFalse($knownString, $userString)
-    {
-        $this->assertFalse(@hash_equals($knownString, $userString));
     }
 }
